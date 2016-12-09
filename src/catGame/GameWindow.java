@@ -5,9 +5,11 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JTextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Calendar;
+
+import javax.swing. * ;
 
 @SuppressWarnings("serial")
 public class GameWindow extends JFrame {
@@ -33,6 +35,8 @@ public class GameWindow extends JFrame {
 	private Coin coin;
 	private String playerName;
 	private static Score scoreCard;
+	public String barkSpeech;
+	public boolean changeSpeech;
 
 	private Dog dogs[] = new Dog[3];
 
@@ -122,40 +126,77 @@ public class GameWindow extends JFrame {
 	      }
 	      
 	    }).start();
-	
-	}
-
-	
-	
-	
-	
-	
-	
-	public void paintDog(){
-
-		//Thread that controls the ANGRY boxer dog.
+		
+		
 		new Thread(new Runnable()
 	    {
 	      public void run()
 	      {
 	        while(true)
 	        {
-
-	        	dogs[0].moveDog();
-	        	repaint();
+	        	changeSpeech = true;
 	    		try {
-					Thread.sleep(2);
+					Thread.sleep(250);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 	        	
 	        }
 	      }
+	      
 	    }).start();
+	
+	}
+
+	synchronized void barkDog(String speech) {
+		
+		
+		if (changeSpeech == true )
+		{	
+			changeSpeech = false;
+			barkSpeech = speech;		
+
+		}
+		
+}
+
+
+		
+
+	
+
+	
+	
+	
+	public void paintDog() throws InterruptedException{
+				
+			   
+		Thread t1 = new Thread("Boxer Dog Thread"){		
+	      public void run()
+	      {
+	    	  	    	  
+	        while(true)
+	        {
+	        	dogs[0].moveDog();
+	        	repaint();
+	        	barkDog("Bark! Bark! >:]  I'm going to get you!");
+	        	try {
+					Thread.sleep(3);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+	        }		
+	        
+	        
+	        
+	      }		
+	    };
+		
+
+
 		
 		//Thread that controls the slower regular dogs.
-		new Thread(new Runnable()
-	    {
+		Thread t2 = new Thread("Regular Dog Thread"){		
 	      public void run()
 	      {
 	        while(true)
@@ -163,15 +204,21 @@ public class GameWindow extends JFrame {
 	        	dogs[2].moveDog();
 	        	dogs[1].moveDog();
 	        	repaint();
+	        	barkDog("ARGHH! Come here! Bark Bark!");
+
 	    		try {
-					Thread.sleep(8);
+					Thread.sleep(10);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 	        	
 	        }
 	      }
-	    }).start();
+	    };
+	    
+	    t1.start();
+	    t2.start();
+
 		
 	}
 	public void paintComponent(Graphics g) {
@@ -187,6 +234,8 @@ public class GameWindow extends JFrame {
 			g.setFont(new Font("Arial", Font.BOLD, 40)); ///DRAW SCORE
 			g.setColor(Color.GREEN);
 			g.drawString("Score: " + score, 450, 100);
+			g.drawString(barkSpeech, 50,490);
+
 
 			if (moveCat() == true) { //DRAW CAT
 				g.drawImage(cat_pic, myCat.getX() - 53, myCat.getY() - 32, null);
@@ -198,20 +247,20 @@ public class GameWindow extends JFrame {
 				if (gameover) {
 					g.setColor(Color.RED);
 					g.drawString("Game Over", 400, 450);
-					g.setColor(Color.CYAN);
-					g.fillRect(100, 50, 200, 50);
-					g.fillRect(750, 50, 150, 50);
+					//g.setColor(Color.CYAN);
+					//g.fillRect(100, 50, 200, 50);
+					//g.fillRect(750, 50, 150, 50);
 					g.setColor(Color.BLACK);
-					g.drawString("RESTART", 110, 90);
-					g.drawString("QUIT", 780, 90);
-					g.setColor(Color.CYAN);
-					g.fillRect(25, 380, 150, 150);
-					g.setColor(Color.BLACK);
-					g.setFont(new Font("Arial", Font.BOLD, 20));
-					g.drawString("Last 3 Scores", 40, 400);
-					g.drawString(">| " + scoreCard.getScores(0), 40, 425);
-					g.drawString(">| " + scoreCard.getScores(1), 40, 445);
-					g.drawString(">| " + scoreCard.getScores(2), 40, 465);
+					//g.drawString("RESTART", 110, 90);
+					//g.drawString("QUIT", 780, 90);
+					//g.setColor(Color.CYAN);
+					//g.fillRect(25, 380, 150, 150);
+					//g.setColor(Color.BLACK);
+					//g.setFont(new Font("Arial", Font.BOLD, 20));
+					//g.drawString("Last 3 Scores", 40, 400);
+					//g.drawString(">| " + scoreCard.getScores(0), 40, 425);
+					//g.drawString(">| " + scoreCard.getScores(1), 40, 445);
+					//g.drawString(">| " + scoreCard.getScores(2), 40, 465);
 					
 					return;
 					
@@ -302,11 +351,12 @@ public class GameWindow extends JFrame {
 		return true;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		GameWindow gw = new GameWindow();
 
 		gw.paintDog();
 		gw.randomMove();
+		//.barkDog("haha");
 
 
 	}
