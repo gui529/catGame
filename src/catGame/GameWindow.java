@@ -160,13 +160,6 @@ public class GameWindow extends JFrame {
 		
 }
 
-
-		
-
-	
-
-	
-	
 	
 	public void paintDog() throws InterruptedException{
 				
