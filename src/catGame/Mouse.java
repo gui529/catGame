@@ -80,8 +80,6 @@ public class Mouse extends MouseAdapter {
     setYDirection(-1);
    }
   }
-  //Draw on canvas with the new positions.
-  gw.paintComponent(gw.dbg);
  }
 
  /**
