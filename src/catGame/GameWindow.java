@@ -5,10 +5,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Calendar;
-
 import javax.swing. * ;
 
 @SuppressWarnings("serial")
@@ -84,9 +80,6 @@ public class GameWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		cat_pic = still_cat;
 	}
-	
-	
-	
 
 	public void paint(Graphics g) {
 
@@ -103,120 +96,98 @@ public class GameWindow extends JFrame {
 		return myCat.getY();
 
 	}
-		
-	public void randomMove(){
-		
+
+	public void randomMove() {
+
 		//thread that generates a new move for the dogs
-		new Thread(new Runnable()
-	    {
-	      public void run()
-	      {
-	        while(true)
-	        {
-				dogs[0].newMove();
-				dogs[1].newMove();
-				dogs[2].newMove();
-	    		try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+		new Thread(new Runnable() {
+			public void run() {
+				while (true) {
+					dogs[0].newMove();
+					dogs[1].newMove();
+					dogs[2].newMove();
+					try {
+						Thread.sleep(1000);
+					} catch(InterruptedException e) {
+						e.printStackTrace();
+					}
+
 				}
-	        	
-	        }
-	      }
-	      
-	    }).start();
-		
-		
-		new Thread(new Runnable()
-	    {
-	      public void run()
-	      {
-	        while(true)
-	        {
-	        	changeSpeech = true;
-	    		try {
-					Thread.sleep(250);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+			}
+
+		}).start();
+
+		new Thread(new Runnable() {
+			public void run() {
+				while (true) {
+					changeSpeech = true;
+					try {
+						Thread.sleep(250);
+					} catch(InterruptedException e) {
+						e.printStackTrace();
+					}
+
 				}
-	        	
-	        }
-	      }
-	      
-	    }).start();
-	
+			}
+
+		}).start();
+
 	}
 
 	synchronized void barkDog(String speech) {
-		
-		
-		if (changeSpeech == true )
-		{	
+
+		if (changeSpeech == true) {
 			changeSpeech = false;
-			barkSpeech = speech;		
+			barkSpeech = speech;
 
 		}
-		
-}
 
-	
-	public void paintDog() throws InterruptedException{
-				
-			   
-		Thread t1 = new Thread("Boxer Dog Thread"){		
-	      public void run()
-	      {
-	    	  	    	  
-	        while(true)
-	        {
-	        	dogs[0].moveDog();
-	        	repaint();
-	        	barkDog("Bark! Bark! >:]  I'm going to get you!");
-	        	try {
-					Thread.sleep(3);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+	}
+
+	public void paintDog() throws InterruptedException {
+
+		Thread t1 = new Thread("Boxer Dog Thread") {
+			public void run() {
+
+				while (true) {
+					dogs[0].moveDog();
+					repaint();
+					barkDog("Bark! Bark! >:]  I'm going to get you!");
+					try {
+						Thread.sleep(3);
+					} catch(InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
-	        }		
-	        
-	        
-	        
-	      }		
-	    };
-		
 
+			}
+		};
 
-		
 		//Thread that controls the slower regular dogs.
-		Thread t2 = new Thread("Regular Dog Thread"){		
-	      public void run()
-	      {
-	        while(true)
-	        {
-	        	dogs[2].moveDog();
-	        	dogs[1].moveDog();
-	        	repaint();
-	        	barkDog("ARGHH! Come here! Bark Bark!");
+		Thread t2 = new Thread("Regular Dog Thread") {
+			public void run() {
+				while (true) {
+					dogs[2].moveDog();
+					dogs[1].moveDog();
+					repaint();
+					barkDog("ARGHH! Come here! Bark Bark!");
 
-	    		try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+					try {
+						Thread.sleep(10);
+					} catch(InterruptedException e) {
+						e.printStackTrace();
+					}
+
 				}
-	        	
-	        }
-	      }
-	    };
-	    
-	    t1.start();
-	    t2.start();
+			}
+		};
 
-		
+		t1.start();
+		t2.start();
+
 	}
 	public void paintComponent(Graphics g) {
-		
-			  
+
 		if (gamestart) {
 
 			g.drawImage(map_pic, 0, 0, null); //DRAW Map
@@ -227,16 +198,14 @@ public class GameWindow extends JFrame {
 			g.setFont(new Font("Arial", Font.BOLD, 40)); ///DRAW SCORE
 			g.setColor(Color.GREEN);
 			g.drawString("Score: " + score, 450, 100);
-			g.drawString(barkSpeech, 50,490);
-
+			g.drawString(barkSpeech, 50, 490);
 
 			if (moveCat() == true) { //DRAW CAT
 				g.drawImage(cat_pic, myCat.getX() - 53, myCat.getY() - 32, null);
-			} 
+			}
 			else {
 
 				g.drawImage(cat_pic, myCat.getX() - 53, myCat.getY() - 32, null); //DRAW CAT
-
 				if (gameover) {
 					g.setColor(Color.RED);
 					g.drawString("Game Over", 400, 450);
@@ -254,9 +223,7 @@ public class GameWindow extends JFrame {
 					//g.drawString(">| " + scoreCard.getScores(0), 40, 425);
 					//g.drawString(">| " + scoreCard.getScores(1), 40, 445);
 					//g.drawString(">| " + scoreCard.getScores(2), 40, 465);
-					
 					return;
-					
 
 				}
 				return;
@@ -349,9 +316,6 @@ public class GameWindow extends JFrame {
 
 		gw.paintDog();
 		gw.randomMove();
-		//.barkDog("haha");
-
-
 	}
 
 }
